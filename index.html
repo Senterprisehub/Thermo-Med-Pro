@@ -3,16 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ThermoMed Pro | Modern Thermal Print Suite</title>
+    <title>ThermoMed Pro | Conditional Print + USB + BLE Scan</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
             background: radial-gradient(circle at 10% 20%, rgba(216, 241, 230, 0.8), rgba(205, 225, 240, 0.9));
@@ -20,59 +15,18 @@
             padding: 1.5rem;
             position: relative;
         }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path fill="rgba(255,255,255,0.2)" d="M50,30 Q80,10 100,30 T150,30" stroke="none"/><circle cx="40" cy="150" r="12" fill="white" opacity="0.1"/><circle cx="170" cy="80" r="18" fill="white" opacity="0.08"/></svg>');
-            background-repeat: repeat;
-            opacity: 0.3;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .dashboard {
-            max-width: 1440px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 2;
-        }
-
-        .grid-2col {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.8rem;
-        }
-
-        @media (max-width: 900px) {
-            .grid-2col {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            body {
-                padding: 1rem;
-            }
-        }
-
+        .dashboard { max-width: 1440px; margin: 0 auto; position: relative; z-index: 2; }
+        .grid-2col { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.8rem; }
+        @media (max-width: 900px) { .grid-2col { grid-template-columns: 1fr; gap: 1.5rem; } body { padding: 1rem; } }
         .card {
             background: rgba(255, 255, 255, 0.88);
             backdrop-filter: blur(12px);
             border-radius: 2rem;
             box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255,255,255,0.6) inset;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transition: all 0.3s;
             overflow: hidden;
         }
-
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 28px 48px -16px rgba(0, 0, 0, 0.25);
-            background: rgba(255, 255, 255, 0.94);
-        }
-
+        .card:hover { transform: translateY(-4px); background: rgba(255, 255, 255, 0.94); }
         .card-header {
             background: rgba(30, 47, 60, 0.85);
             backdrop-filter: blur(4px);
@@ -82,26 +36,9 @@
             align-items: center;
             border-bottom: 2px solid #4c9f70;
         }
-
-        .card-header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .card-header-left i {
-            font-size: 1.6rem;
-            color: #a3e4b7;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-        }
-
-        .card-header-left h2 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: white;
-            letter-spacing: -0.3px;
-        }
-
+        .card-header-left { display: flex; align-items: center; gap: 12px; }
+        .card-header-left i { font-size: 1.6rem; color: #a3e4b7; }
+        .card-header-left h2 { font-size: 1.3rem; font-weight: 700; color: white; }
         .menu-btn {
             background: rgba(255, 255, 255, 0.2);
             border: none;
@@ -111,43 +48,16 @@
             font-size: 0.9rem;
             color: white;
             cursor: pointer;
-            transition: 0.2s;
             display: flex;
             align-items: center;
             gap: 8px;
-            backdrop-filter: blur(4px);
         }
-
-        .menu-btn:hover {
-            background: rgba(255, 255, 255, 0.35);
-            transform: scale(0.96);
-        }
-
-        .card-body {
-            padding: 1.8rem;
-        }
-
-        .input-group {
-            margin-bottom: 1.4rem;
-        }
-
-        .input-group label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #1e2f3c;
-            margin-bottom: 0.5rem;
-        }
-
-        .input-group label i {
-            color: #2c6e49;
-            font-size: 0.9rem;
-        }
-
-        /* custom RBS group: value + unit */
-        .rbs-wrapper {
+        .menu-btn:hover { background: rgba(255, 255, 255, 0.35); transform: scale(0.96); }
+        .card-body { padding: 1.8rem; }
+        .input-group { margin-bottom: 1.4rem; }
+        .input-group label { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.85rem; color: #1e2f3c; margin-bottom: 0.5rem; }
+        .input-group label i { color: #2c6e49; }
+        .rbs-wrapper, .bp-wrapper {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -155,106 +65,32 @@
             border: 1.5px solid rgba(0,0,0,0.08);
             border-radius: 1.2rem;
             padding: 0 0.2rem 0 0;
-            transition: all 0.2s;
+            transition: 0.2s;
         }
-        .rbs-wrapper:focus-within {
-            border-color: #2c7a4d;
-            box-shadow: 0 0 0 3px rgba(44, 122, 77, 0.2);
-        }
-        .rbs-wrapper input {
-            border: none;
-            padding: 0.9rem 0.5rem 0.9rem 1rem;
-            font-size: 0.95rem;
-            font-weight: 500;
-            background: transparent;
-            width: 100%;
-            outline: none;
-        }
-        .rbs-unit {
-            background: #eef2f7;
-            padding: 0.5rem 1rem;
-            border-radius: 2rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #2c6e49;
-            white-space: nowrap;
-            margin-right: 6px;
-            pointer-events: none;
-        }
-
+        .rbs-wrapper:focus-within, .bp-wrapper:focus-within { border-color: #2c7a4d; box-shadow: 0 0 0 3px rgba(44,122,77,0.2); }
+        .rbs-wrapper input, .bp-wrapper input { border: none; padding: 0.9rem 0.5rem 0.9rem 1rem; font-size: 0.95rem; background: transparent; width: 100%; outline: none; }
+        .rbs-unit, .bp-unit { background: #eef2f7; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.8rem; font-weight: 600; color: #2c6e49; white-space: nowrap; margin-right: 6px; pointer-events: none; }
+        .bp-double { display: flex; gap: 12px; flex: 1; }
+        .bp-double .bp-field { flex: 1; display: flex; align-items: center; }
+        .bp-double .bp-field input { width: 100%; padding: 0.9rem 0.3rem; text-align: center; }
+        .bp-sep { font-weight: 700; color: #2c6e49; }
         input, .date-chip {
             width: 100%;
             padding: 0.9rem 1rem;
             border: 1.5px solid rgba(0,0,0,0.08);
             border-radius: 1.2rem;
             font-size: 0.95rem;
-            font-family: 'Inter', monospace;
             background: white;
-            transition: all 0.2s;
-            font-weight: 500;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+            transition: 0.2s;
         }
-
-        input:focus {
-            outline: none;
-            border-color: #2c7a4d;
-            box-shadow: 0 0 0 3px rgba(44, 122, 77, 0.2);
-        }
-
-        .date-chip {
-            background: #f0f7fc;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 500;
-            color: #0b3b2f;
-        }
-
-        .separator-light {
-            margin: 1.2rem 0;
-            border-top: 2px dashed rgba(76, 159, 112, 0.3);
-        }
-
-        .logo-zone {
-            background: rgba(248, 250, 253, 0.7);
-            border-radius: 1.5rem;
-            padding: 1rem;
-            margin-bottom: 1.6rem;
-            border: 1px solid rgba(76, 159, 112, 0.2);
-        }
-
-        .logo-preview-wrap {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .logo-frame {
-            width: 90px;
-            height: 70px;
-            background: white;
-            border-radius: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.02);
-            overflow: hidden;
-        }
-
-        .logo-frame img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
+        input:focus { outline: none; border-color: #2c7a4d; box-shadow: 0 0 0 3px rgba(44,122,77,0.2); }
+        .date-chip { background: #f0f7fc; display: flex; align-items: center; gap: 10px; font-weight: 500; }
+        .separator-light { margin: 1.2rem 0; border-top: 2px dashed rgba(76,159,112,0.3); }
+        .logo-zone { background: rgba(248,250,253,0.7); border-radius: 1.5rem; padding: 1rem; margin-bottom: 1.6rem; border: 1px solid rgba(76,159,112,0.2); }
+        .logo-preview-wrap { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .logo-frame { width: 90px; height: 70px; background: white; border-radius: 1rem; display: flex; align-items: center; justify-content: center; border: 1px solid #e2e8f0; overflow: hidden; }
+        .logo-frame img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .button-group { display: flex; gap: 10px; flex-wrap: wrap; }
         .btn {
             border: none;
             padding: 0.55rem 1.2rem;
@@ -262,116 +98,38 @@
             font-weight: 600;
             font-size: 0.8rem;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: 0.2s;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             background: #eef3fa;
             color: #1f3b48;
         }
-
-        .btn-primary {
-            background: linear-gradient(105deg, #2c6e49, #1f5538);
-            color: white;
-            box-shadow: 0 6px 12px -6px rgba(44, 110, 73, 0.4);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.05);
-            box-shadow: 0 12px 18px -8px rgba(44, 110, 73, 0.5);
-        }
-
-        .btn-outline {
-            background: rgba(255,255,255,0.7);
-            border: 1px solid #cbdde6;
-        }
-
-        .btn-outline:hover {
-            background: white;
-            border-color: #2c6e49;
-        }
-
-        .btn-danger {
-            background: #ffe8e8;
-            color: #b91c1c;
-        }
-
-        .btn-danger:hover {
-            background: #ffd4d4;
-        }
-
-        .btn-large {
-            width: 100%;
-            padding: 0.9rem;
-            font-size: 1rem;
-            justify-content: center;
-            gap: 12px;
-        }
-
-        .bluetooth-panel {
-            background: rgba(238, 244, 250, 0.8);
+        .btn-primary { background: linear-gradient(105deg, #2c6e49, #1f5538); color: white; box-shadow: 0 6px 12px -6px rgba(44,110,73,0.4); }
+        .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.05); }
+        .btn-outline { background: rgba(255,255,255,0.7); border: 1px solid #cbdde6; }
+        .btn-outline:hover { background: white; border-color: #2c6e49; }
+        .btn-danger { background: #ffe8e8; color: #b91c1c; }
+        .btn-danger:hover { background: #ffd4d4; }
+        .btn-large { width: 100%; padding: 0.9rem; font-size: 1rem; justify-content: center; gap: 12px; }
+        .connection-panel {
+            background: rgba(238,244,250,0.8);
             border-radius: 1.5rem;
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            margin: 1.5rem 0 1.2rem;
-            gap: 12px;
-        }
-
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 10px;
-            background: #94a3b8;
-            transition: 0.2s;
-        }
-
-        .dot.connected {
-            background: #2c6e49;
-            box-shadow: 0 0 0 2px #b8f0cf;
-        }
-
-        .preview-mock {
-            background: #fef6e8;
-            border-radius: 1.5rem;
-            padding: 1.2rem;
-            border: 1px solid #ffe0b5;
-            margin-top: 0.5rem;
-        }
-
-        .mock-receipt {
-            background: white;
-            border-radius: 1rem;
             padding: 1rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            transition: 0.2s;
+            margin: 1rem 0;
         }
-
-        .mock-text {
-            font-family: 'Courier New', 'SF Mono', monospace;
-            font-size: 11px;
-            line-height: 1.5;
-            text-align: center;
-        }
-
+        .conn-buttons { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+        .status-indicator { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.85rem; margin-bottom: 8px; }
+        .dot { width: 10px; height: 10px; border-radius: 10px; background: #94a3b8; }
+        .dot.connected { background: #2c6e49; box-shadow: 0 0 0 2px #b8f0cf; }
+        .preview-mock { background: #fef6e8; border-radius: 1.5rem; padding: 1.2rem; border: 1px solid #ffe0b5; margin-top: 0.5rem; }
+        .mock-receipt { background: white; border-radius: 1rem; padding: 1rem; }
+        .mock-text { font-family: 'Courier New', monospace; font-size: 11px; line-height: 1.5; text-align: center; }
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
             backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
@@ -381,75 +139,24 @@
             opacity: 0;
             transition: 0.2s;
         }
-
-        .modal-overlay.active {
-            visibility: visible;
-            opacity: 1;
-        }
-
+        .modal-overlay.active { visibility: visible; opacity: 1; }
         .history-modal {
-            background: rgba(255, 255, 255, 0.98);
+            background: rgba(255,255,255,0.98);
             width: 90%;
             max-width: 550px;
             border-radius: 2rem;
-            box-shadow: 0 30px 50px rgba(0,0,0,0.3);
             overflow: hidden;
             max-height: 80vh;
             display: flex;
             flex-direction: column;
         }
-
-        .modal-header {
-            background: #1e2f3c;
-            color: white;
-            padding: 1rem 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 1.8rem;
-            color: white;
-            cursor: pointer;
-            line-height: 1;
-        }
-
-        .history-list {
-            padding: 1rem;
-            overflow-y: auto;
-            flex: 1;
-        }
-
-        .history-item {
-            background: #f9fbfd;
-            border-radius: 1rem;
-            padding: 0.8rem;
-            margin-bottom: 0.8rem;
-            border-left: 4px solid #4c9f70;
-        }
-
-        .message-toast {
-            background: #1e2f3c;
-            color: white;
-            border-radius: 40px;
-            padding: 10px 18px;
-            font-size: 0.8rem;
-            text-align: center;
-            margin-top: 14px;
-            backdrop-filter: blur(4px);
-        }
-
-        .footer-note {
-            text-align: center;
-            font-size: 0.7rem;
-            color: #4c6a7c;
-            margin-top: 1rem;
-            padding-top: 0.8rem;
-            border-top: 1px solid rgba(0,0,0,0.05);
-        }
+        .modal-header { background: #1e2f3c; color: white; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .close-modal { background: none; border: none; font-size: 1.8rem; color: white; cursor: pointer; }
+        .history-list { padding: 1rem; overflow-y: auto; flex: 1; }
+        .history-item { background: #f9fbfd; border-radius: 1rem; padding: 0.8rem; margin-bottom: 0.8rem; border-left: 4px solid #4c9f70; }
+        .message-toast { background: #1e2f3c; color: white; border-radius: 40px; padding: 10px 18px; font-size: 0.8rem; text-align: center; margin-top: 14px; }
+        .footer-note { text-align: center; font-size: 0.7rem; color: #4c6a7c; margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid rgba(0,0,0,0.05); }
+        small { display: block; margin-top: 4px; font-size: 0.7rem; color: #4f6a7c; }
     </style>
 </head>
 <body>
@@ -458,76 +165,83 @@
         <!-- LEFT CARD -->
         <div class="card">
             <div class="card-header">
-                <div class="card-header-left">
-                    <i class="fas fa-print"></i>
-                    <h2>ThermoPrint Studio</h2>
-                </div>
+                <div class="card-header-left"><i class="fas fa-print"></i><h2>ThermoPrint Studio</h2></div>
                 <button id="historyMenuBtn" class="menu-btn"><i class="fas fa-bars"></i> History</button>
             </div>
             <div class="card-body">
-                <!-- Logo Upload -->
+                <!-- Logo -->
                 <div class="logo-zone">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <span style="font-weight: 700; font-size: 0.85rem;"><i class="fas fa-image"></i> Practice Logo</span>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="font-weight: 700;"><i class="fas fa-image"></i> Practice Logo</span>
                         <span style="font-size: 0.7rem; background: #e9eff5; padding: 3px 10px; border-radius: 20px;">PNG/JPG</span>
                     </div>
                     <div class="logo-preview-wrap">
-                        <div class="logo-frame">
-                            <img id="logoPreviewImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='50' viewBox='0 0 80 50'%3E%3Crect width='80' height='50' fill='%23f1f5f9'/%3E%3Ctext x='18' y='28' font-size='9' fill='%236b7280'%3ELogo%3C/text%3E%3C/svg%3E" alt="Logo preview">
-                        </div>
+                        <div class="logo-frame"><img id="logoPreviewImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='50' viewBox='0 0 80 50'%3E%3Crect width='80' height='50' fill='%23f1f5f9'/%3E%3Ctext x='18' y='28' font-size='9' fill='%236b7280'%3ELogo%3C/text%3E%3C/svg%3E" alt="Logo"></div>
                         <div class="button-group">
                             <button id="uploadLogoBtn" class="btn btn-primary"><i class="fas fa-upload"></i> Upload</button>
                             <button id="clearLogoBtn" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Remove</button>
                         </div>
                     </div>
-                    <div style="font-size: 0.7rem; color: #4f6f8a; margin-top: 8px;"><i class="fas fa-save"></i> Auto-saved · Centered print</div>
+                    <div style="font-size: 0.7rem; margin-top: 8px;"><i class="fas fa-save"></i> Auto-saved · Centered print</div>
                 </div>
 
-                <!-- Clinic (empty) -->
+                <!-- Clinic -->
                 <div class="input-group">
                     <label><i class="fas fa-hospital-user"></i> Clinic / Practice Name</label>
                     <input type="text" id="clinicName" placeholder="e.g., Central Medical Centre" value="">
                 </div>
-
                 <div class="input-group">
                     <label><i class="fas fa-calendar-alt"></i> Date & Time (live)</label>
-                    <div class="date-chip" id="liveDateTimePreview">
-                        <i class="far fa-clock"></i> <span>-- -- --</span>
-                    </div>
+                    <div class="date-chip" id="liveDateTimePreview"><i class="far fa-clock"></i> <span>-- -- --</span></div>
                 </div>
-
                 <div class="separator-light"></div>
 
-                <!-- RBS with fixed mg/dL unit (unremovable) -->
+                <!-- RBS -->
                 <div class="input-group">
                     <label><i class="fas fa-tint"></i> Random Blood Glucose (RBS)</label>
                     <div class="rbs-wrapper">
                         <input type="text" id="rbsValueInput" placeholder="Enter value (e.g., 118)" autocomplete="off">
                         <span class="rbs-unit">mg/dL</span>
                     </div>
-                    <small style="font-size:0.7rem; color:#4f6a7c;">Only numeric value – unit is automatically added</small>
+                    <small>Leave empty to skip printing this section</small>
                 </div>
 
-                <!-- HbA1c (normal input, but we'll ensure %) -->
+                <!-- HbA1c -->
                 <div class="input-group">
                     <label><i class="fas fa-chart-line"></i> HbA1c Test (%)</label>
                     <input type="text" id="hba1cValue" placeholder="e.g., 5.8" value="">
-                    <small style="font-size:0.7rem; color:#4f6a7c;">Value without % (added automatically)</small>
+                    <small>Leave empty to skip</small>
                 </div>
 
-                <!-- Bluetooth Panel -->
-                <div class="bluetooth-panel">
+                <!-- BP -->
+                <div class="input-group">
+                    <label><i class="fas fa-heartbeat"></i> Blood Pressure (BP)</label>
+                    <div class="bp-wrapper">
+                        <div class="bp-double">
+                            <div class="bp-field"><input type="text" id="bpSystolic" placeholder="Systolic"></div>
+                            <span class="bp-sep">/</span>
+                            <div class="bp-field"><input type="text" id="bpDiastolic" placeholder="Diastolic"></div>
+                        </div>
+                        <span class="bp-unit">mmHg</span>
+                    </div>
+                    <small>Leave both empty to skip BP section</small>
+                </div>
+
+                <!-- Connection Panel: Bluetooth + USB -->
+                <div class="connection-panel">
                     <div class="status-indicator">
                         <div class="dot" id="statusDot"></div>
                         <span id="btStatusText">Not connected</span>
                     </div>
-                    <div style="display: flex; gap: 10px;">
-                        <button id="connectBtn" class="btn btn-outline"><i class="fab fa-bluetooth-b"></i> Connect</button>
+                    <div class="conn-buttons">
+                        <button id="connectBluetoothBtn" class="btn btn-outline"><i class="fab fa-bluetooth-b"></i> Scan & Connect BT</button>
+                        <button id="connectUsbBtn" class="btn btn-outline"><i class="fas fa-usb"></i> Connect USB</button>
                         <button id="disconnectBtn" class="btn btn-outline" disabled><i class="fas fa-plug"></i> Disconnect</button>
                     </div>
+                    <small><i class="fas fa-info-circle"></i> Bluetooth: opens device picker (SPP). USB: requires WebUSB support (Chrome/Edge).</small>
                 </div>
 
-                <button id="printBtn" class="btn btn-primary btn-large"><i class="fas fa-print"></i> PRINT RECEIPT (BOLD + CENTERED)</button>
+                <button id="printBtn" class="btn btn-primary btn-large"><i class="fas fa-print"></i> PRINT (only filled sections)</button>
                 <div id="messageArea" style="margin-top: 16px;"></div>
             </div>
         </div>
@@ -535,33 +249,25 @@
         <!-- RIGHT CARD: Preview -->
         <div class="card">
             <div class="card-header">
-                <div class="card-header-left">
-                    <i class="fas fa-eye"></i>
-                    <h2>Live Receipt Preview</h2>
-                </div>
+                <div class="card-header-left"><i class="fas fa-eye"></i><h2>Live Preview (Conditional)</h2></div>
             </div>
             <div class="card-body">
                 <div class="preview-mock">
-                    <small><i class="fas fa-magic"></i> Centered · Bold clinic & tests</small>
-                    <div id="liveMockReceipt" class="mock-receipt">
-                        <div style="text-align:center; padding: 0.5rem;">⟳ Loading preview...</div>
-                    </div>
+                    <small><i class="fas fa-magic"></i> Only filled sections appear below</small>
+                    <div id="liveMockReceipt" class="mock-receipt"><div style="text-align:center;">⟳ Loading preview...</div></div>
                 </div>
-                <div style="margin-top: 1.4rem; background: rgba(238, 242, 247, 0.7); border-radius: 1.2rem; padding: 1rem;">
-                    <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 8px;">
+                <div style="margin-top: 1rem; background: rgba(238,242,247,0.7); border-radius: 1.2rem; padding: 1rem;">
+                    <div style="display: flex; gap: 12px; align-items: center;">
                         <i class="fas fa-info-circle" style="color: #2c6e49;"></i>
-                        <span style="font-weight: 700;">Features</span>
+                        <span style="font-weight: 700;">Smart print</span>
                     </div>
-                    <ul style="margin-left: 1.2rem; font-size: 0.8rem; color: #2c4b5c;">
-                        <li><i class="fas fa-check-circle" style="color:#2c6e49;"></i> ESC/POS bold + center</li>
-                        <li><i class="fas fa-check-circle" style="color:#2c6e49;"></i> RBS with fixed mg/dL unit</li>
-                        <li><i class="fas fa-history"></i> Print history (auto-delete after 7 days)</li>
-                        <li><i class="fas fa-mobile-alt"></i> Fully responsive</li>
+                    <ul style="margin-left: 1.2rem; font-size: 0.8rem; margin-top: 6px;">
+                        <li><i class="fas fa-check-circle"></i> Only tests with user input are printed</li>
+                        <li><i class="fas fa-check-circle"></i> USB + Bluetooth (SPP) support</li>
+                        <li><i class="fas fa-history"></i> History auto-delete after 7 days</li>
                     </ul>
                 </div>
-                <div class="footer-note">
-                    <i class="fas fa-bluetooth"></i> Works with 2"/3" Bluetooth thermal printers (SPP)
-                </div>
+                <div class="footer-note"><i class="fas fa-bluetooth"></i> 2"/3" thermal printers · ESC/POS</div>
             </div>
         </div>
     </div>
@@ -570,23 +276,15 @@
 <!-- HISTORY MODAL -->
 <div id="historyModal" class="modal-overlay">
     <div class="history-modal">
-        <div class="modal-header">
-            <h3><i class="fas fa-history"></i> Recent Tests (7 days retention)</h3>
-            <button class="close-modal" id="closeHistoryBtn">&times;</button>
-        </div>
-        <div id="historyListContainer" class="history-list">
-            <p style="text-align:center; color:gray;">Loading history...</p>
-        </div>
-        <div style="padding: 0.5rem 1rem 1rem; display: flex; justify-content: flex-end;">
-            <button id="clearAllHistoryBtn" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Clear All</button>
-        </div>
+        <div class="modal-header"><h3><i class="fas fa-history"></i> Recent Tests (7 days)</h3><button class="close-modal" id="closeHistoryBtn">&times;</button></div>
+        <div id="historyListContainer" class="history-list"><p style="text-align:center;">Loading...</p></div>
+        <div style="padding: 0.5rem 1rem 1rem; display: flex; justify-content: flex-end;"><button id="clearAllHistoryBtn" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Clear All</button></div>
     </div>
 </div>
 
 <script>
     // ---------- GLOBALS ----------
-    let bluetoothDevice = null;
-    let bluetoothCharacteristic = null;
+    let activeConnection = { type: null, device: null, writer: null }; // for USB or BT characteristic
     let isConnected = false;
     const SPP_SERVICE_UUID = "00001101-0000-1000-8000-00805f9b34fb";
     const SPP_CHARACTERISTIC_UUID = "00001101-0000-1000-8000-00805f9b34fb";
@@ -598,12 +296,15 @@
     // DOM elements
     const logoPreview = document.getElementById('logoPreviewImg');
     const clinicInput = document.getElementById('clinicName');
-    const rbsValueInput = document.getElementById('rbsValueInput');
+    const rbsInput = document.getElementById('rbsValueInput');
     const hba1cInput = document.getElementById('hba1cValue');
+    const bpSys = document.getElementById('bpSystolic');
+    const bpDia = document.getElementById('bpDiastolic');
     const liveDateTimeSpan = document.getElementById('liveDateTimePreview');
     const btStatusSpan = document.getElementById('btStatusText');
     const statusDot = document.getElementById('statusDot');
-    const connectBtn = document.getElementById('connectBtn');
+    const connectBtBtn = document.getElementById('connectBluetoothBtn');
+    const connectUsbBtn = document.getElementById('connectUsbBtn');
     const disconnectBtn = document.getElementById('disconnectBtn');
     const printBtn = document.getElementById('printBtn');
     const messageDiv = document.getElementById('messageArea');
@@ -611,21 +312,11 @@
     const historyModal = document.getElementById('historyModal');
     const historyListDiv = document.getElementById('historyListContainer');
 
-    // Helper: get RBS full string with unit
-    function getRBSValue() {
-        let val = rbsValueInput.value.trim();
-        if (val === "") return "";
-        return `${val} mg/dL`;
-    }
+    // Helper: get formatted values
+    function getRBSValue() { let v = rbsInput.value.trim(); if(v==="") return null; return `${v} mg/dL`; }
+    function getHbA1cValue() { let v = hba1cInput.value.trim(); if(v==="") return null; return `${v} %`; }
+    function getBPValue() { let s = bpSys.value.trim(), d = bpDia.value.trim(); if(s==="" && d==="") return null; if(s==="") s="?"; if(d==="") d="?"; return `${s}/${d} mmHg`; }
 
-    // Helper: get HbA1c full string with %
-    function getHbA1cValue() {
-        let val = hba1cInput.value.trim();
-        if (val === "") return "";
-        return `${val} %`;
-    }
-
-    // Helper: Toast message
     function showMessage(msg, isError = false) {
         const toast = document.createElement('div');
         toast.className = 'message-toast';
@@ -633,182 +324,100 @@
         toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${msg}`;
         messageDiv.innerHTML = '';
         messageDiv.appendChild(toast);
-        setTimeout(() => { if (messageDiv.firstChild === toast) messageDiv.innerHTML = ''; }, 3800);
+        setTimeout(() => { if (messageDiv.firstChild === toast) messageDiv.innerHTML = ''; }, 4000);
     }
 
-    // ---------- HISTORY (7 days auto-delete) ----------
-    function getHistory() {
-        const raw = localStorage.getItem(HISTORY_STORAGE_KEY);
-        if (!raw) return [];
-        try {
-            let records = JSON.parse(raw);
-            const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-            const filtered = records.filter(rec => rec.timestamp > sevenDaysAgo);
-            if (filtered.length !== records.length) localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(filtered));
-            return filtered;
-        } catch(e) { return []; }
-    }
-    function saveHistory(records) { localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(records)); }
-    function addHistoryRecord(clinic, rbsFull, hba1cFull) {
-        const records = getHistory();
-        records.unshift({
-            id: Date.now(),
-            clinic: clinic,
-            rbs: rbsFull,
-            hba1c: hba1cFull,
-            timestamp: Date.now(),
-            dateStr: new Date().toLocaleString()
-        });
-        saveHistory(records);
-    }
-    function clearAllHistory() {
-        localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify([]));
-        renderHistoryList();
-        showMessage("History cleared");
-    }
-    function renderHistoryList() {
-        const records = getHistory();
-        if (!records.length) {
-            historyListDiv.innerHTML = '<p style="text-align:center; color:gray;">📭 No test records yet. Print a receipt to save history.</p>';
-            return;
-        }
-        let html = '';
-        records.forEach(rec => {
-            html += `
-                <div class="history-item">
-                    <p style="color:#2c6e49; font-weight:600;"><i class="far fa-calendar-alt"></i> ${escapeHtml(rec.dateStr)}</p>
-                    <p><strong>🏥 Clinic:</strong> ${escapeHtml(rec.clinic) || '—'}</p>
-                    <p><strong>🩸 RBS:</strong> ${escapeHtml(rec.rbs) || '—'}</p>
-                    <p><strong>🧪 HbA1c:</strong> ${escapeHtml(rec.hba1c) || '—'}</p>
-                </div>
-            `;
-        });
-        historyListDiv.innerHTML = html;
-    }
-    function escapeHtml(str) { return String(str).replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+    // ---------- HISTORY ----------
+    function getHistory() { const raw = localStorage.getItem(HISTORY_STORAGE_KEY); if (!raw) return []; try { let r = JSON.parse(raw); const cutoff = Date.now() - 7*24*3600000; let f = r.filter(rec => rec.timestamp > cutoff); if(f.length !== r.length) localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(f)); return f; } catch(e){ return []; } }
+    function saveHistory(rec) { localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(rec)); }
+    function addHistoryRecord(clinic, rbs, hba1c, bp) { let recs = getHistory(); recs.unshift({ id: Date.now(), clinic, rbs, hba1c, bp, timestamp: Date.now(), dateStr: new Date().toLocaleString() }); saveHistory(recs); }
+    function clearAllHistory() { localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify([])); renderHistoryList(); showMessage("History cleared"); }
+    function renderHistoryList() { let recs = getHistory(); if(!recs.length) { historyListDiv.innerHTML = '<p style="text-align:center;">📭 No test records.</p>'; return; } let html = ''; recs.forEach(r => { html += `<div class="history-item"><p style="color:#2c6e49;"><i class="far fa-calendar-alt"></i> ${escapeHtml(r.dateStr)}</p><p><strong>🏥 Clinic:</strong> ${escapeHtml(r.clinic)||'—'}</p>${r.rbs?`<p><strong>🩸 RBS:</strong> ${escapeHtml(r.rbs)}</p>`:''}${r.hba1c?`<p><strong>🧪 HbA1c:</strong> ${escapeHtml(r.hba1c)}</p>`:''}${r.bp?`<p><strong>❤️ BP:</strong> ${escapeHtml(r.bp)}</p>`:''}</div>`; }); historyListDiv.innerHTML = html; }
+    function escapeHtml(s) { return String(s).replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
 
-    // Modal events
-    document.getElementById('historyMenuBtn').addEventListener('click', () => { renderHistoryList(); historyModal.classList.add('active'); });
-    document.getElementById('closeHistoryBtn').addEventListener('click', () => historyModal.classList.remove('active'));
-    document.getElementById('clearAllHistoryBtn').addEventListener('click', () => { if(confirm("Delete ALL test history?")) clearAllHistory(); });
-    historyModal.addEventListener('click', (e) => { if(e.target === historyModal) historyModal.classList.remove('active'); });
+    document.getElementById('historyMenuBtn').onclick = () => { renderHistoryList(); historyModal.classList.add('active'); };
+    document.getElementById('closeHistoryBtn').onclick = () => historyModal.classList.remove('active');
+    document.getElementById('clearAllHistoryBtn').onclick = () => { if(confirm("Delete all history?")) clearAllHistory(); };
+    historyModal.onclick = (e) => { if(e.target === historyModal) historyModal.classList.remove('active'); };
 
-    // ---------- LIVE PREVIEW (with bold simulation + units) ----------
+    // ---------- LIVE PREVIEW (conditional) ----------
     function updateFullPreview() {
         const clinic = clinicInput.value.trim() || "_____";
-        const rbsFull = getRBSValue() || "_______";
-        const hba1cFull = getHbA1cValue() || "_______";
+        const rbs = getRBSValue();
+        const hba1c = getHbA1cValue();
+        const bp = getBPValue();
         const now = new Date();
         const dateTime = `${now.toLocaleDateString('en-CA')}  ${now.toLocaleTimeString('en-US', { hour12: false })}`;
         liveDateTimeSpan.innerHTML = `<i class="far fa-clock"></i> <span>${dateTime}</span>`;
-
-        let logoHtml = '';
-        if (storedLogoDataURL && storedLogoDataURL !== 'null') {
-            logoHtml = `<div style="display:flex; justify-content:center; margin-bottom:10px;"><img src="${storedLogoDataURL}" style="max-width:130px; max-height:70px;"></div>`;
-        } else {
-            logoHtml = `<div style="margin-bottom:6px; font-size:10px; color:#aaa;">[No logo]</div>`;
-        }
-
-        const lines = [
-            `<strong>Clinic: ${escapeHtml(clinic)}</strong>`,
-            `${dateTime}`,
-            `--------------------------------`,
-            `Random Blood Glucose Test (RBS)`,
-            `<strong>Test Value: ${escapeHtml(rbsFull)}</strong>`,
-            `--------------------------------`,
-            `HbA1c Test`,
-            `<strong>HbA1c {%} : ${escapeHtml(hba1cFull)}</strong>`,
-            `********************************`,
-            `Thank you for your visit!`,
-            `Please follow up with your doctor.`,
-            `********************************`
-        ];
-        const mockHtml = `${logoHtml}<div class="mock-text">${lines.map(l => `<div>${l}</div>`).join('')}</div>`;
-        liveMockDiv.innerHTML = mockHtml;
+        let logoHtml = (storedLogoDataURL && storedLogoDataURL !== 'null') ? `<div style="display:flex; justify-content:center; margin-bottom:10px;"><img src="${storedLogoDataURL}" style="max-width:130px; max-height:70px;"></div>` : `<div style="margin-bottom:6px;">[No logo]</div>`;
+        let lines = [`<strong>Clinic: ${escapeHtml(clinic)}</strong>`, `${dateTime}`, `--------------------------------`];
+        if(rbs) { lines.push(`Random Blood Glucose Test (RBS)`, `<strong>Test Value: ${escapeHtml(rbs)}</strong>`, `--------------------------------`); }
+        if(hba1c) { lines.push(`HbA1c Test`, `<strong>HbA1c {%} : ${escapeHtml(hba1c)}</strong>`, `--------------------------------`); }
+        if(bp) { lines.push(`Blood Pressure`, `<strong>${escapeHtml(bp)}</strong>`, `--------------------------------`); }
+        lines.push(`********************************`, `Thank you for your visit!`, `Please follow up with your doctor.`, `********************************`);
+        liveMockDiv.innerHTML = logoHtml + `<div class="mock-text">${lines.map(l => `<div>${l}</div>`).join('')}</div>`;
     }
-
     clinicInput.addEventListener('input', updateFullPreview);
-    rbsValueInput.addEventListener('input', updateFullPreview);
+    rbsInput.addEventListener('input', updateFullPreview);
     hba1cInput.addEventListener('input', updateFullPreview);
+    bpSys.addEventListener('input', updateFullPreview);
+    bpDia.addEventListener('input', updateFullPreview);
     setInterval(updateFullPreview, 500);
 
-    // ---------- LOGO MANAGEMENT ----------
-    function loadLogoFromStorage() {
-        const saved = localStorage.getItem(LOGO_STORAGE_KEY);
-        if (saved && saved !== 'null') {
-            storedLogoDataURL = saved;
-            logoPreview.src = storedLogoDataURL;
-        } else {
-            storedLogoDataURL = null;
-            logoPreview.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='50' viewBox='0 0 80 50'%3E%3Crect width='80' height='50' fill='%23f1f5f9'/%3E%3Ctext x='18' y='28' font-size='9' fill='%236b7280'%3ELogo%3C/text%3E%3C/svg%3E";
-        }
-        updateFullPreview();
-    }
-    function saveLogoToStorage(dataURL) {
-        if (dataURL) {
-            localStorage.setItem(LOGO_STORAGE_KEY, dataURL);
-            storedLogoDataURL = dataURL;
-        } else {
-            localStorage.removeItem(LOGO_STORAGE_KEY);
-            storedLogoDataURL = null;
-        }
-        logoPreview.src = storedLogoDataURL || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='50' viewBox='0 0 80 50'%3E%3Crect width='80' height='50' fill='%23f1f5f9'/%3E%3Ctext x='18' y='28' font-size='9' fill='%236b7280'%3ELogo%3C/text%3E%3C/svg%3E";
-        updateFullPreview();
-    }
-    document.getElementById('uploadLogoBtn').addEventListener('click', () => {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/png, image/jpeg, image/jpg, image/bmp';
-        input.onchange = (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (ev) => { saveLogoToStorage(ev.target.result); showMessage("✅ Logo uploaded"); };
-            reader.readAsDataURL(file);
-        };
-        input.click();
-    });
-    document.getElementById('clearLogoBtn').addEventListener('click', () => { saveLogoToStorage(null); showMessage("Logo removed"); });
+    // ---------- LOGO ----------
+    function loadLogoFromStorage() { const s = localStorage.getItem(LOGO_STORAGE_KEY); if(s && s!=='null') { storedLogoDataURL = s; logoPreview.src = s; } else { storedLogoDataURL = null; logoPreview.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='50' viewBox='0 0 80 50'%3E%3Crect width='80' height='50' fill='%23f1f5f9'/%3E%3Ctext x='18' y='28' font-size='9' fill='%236b7280'%3ELogo%3C/text%3E%3C/svg%3E"; } updateFullPreview(); }
+    function saveLogoToStorage(dataURL) { if(dataURL) { localStorage.setItem(LOGO_STORAGE_KEY, dataURL); storedLogoDataURL = dataURL; } else { localStorage.removeItem(LOGO_STORAGE_KEY); storedLogoDataURL = null; } logoPreview.src = storedLogoDataURL || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='50' viewBox='0 0 80 50'%3E%3Crect width='80' height='50' fill='%23f1f5f9'/%3E%3Ctext x='18' y='28' font-size='9' fill='%236b7280'%3ELogo%3C/text%3E%3C/svg%3E"; updateFullPreview(); }
+    document.getElementById('uploadLogoBtn').onclick = () => { let inp = document.createElement('input'); inp.type='file'; inp.accept='image/png,image/jpeg'; inp.onchange = e => { let f = e.target.files[0]; if(!f) return; let rd = new FileReader(); rd.onload = ev => { saveLogoToStorage(ev.target.result); showMessage("Logo uploaded"); }; rd.readAsDataURL(f); }; inp.click(); };
+    document.getElementById('clearLogoBtn').onclick = () => { saveLogoToStorage(null); showMessage("Logo removed"); };
 
-    // ---------- BLUETOOTH ----------
-    function updateBluetoothUI() {
-        if (isConnected) {
-            btStatusSpan.innerText = "Connected";
-            statusDot.className = "dot connected";
-            disconnectBtn.disabled = false;
-        } else {
-            btStatusSpan.innerText = "Not connected";
-            statusDot.className = "dot disconnected";
-            disconnectBtn.disabled = true;
-        }
-    }
-    async function connectPrinter() {
-        if (!navigator.bluetooth) { showMessage("Web Bluetooth not supported (Chrome/Edge required)", true); return false; }
+    // ---------- CONNECTION MANAGEMENT ----------
+    function updateUI() { if(isConnected) { btStatusSpan.innerText = "Connected"; statusDot.className = "dot connected"; disconnectBtn.disabled = false; } else { btStatusSpan.innerText = "Not connected"; statusDot.className = "dot disconnected"; disconnectBtn.disabled = true; } }
+    async function disconnect() { if(activeConnection.type === 'bluetooth' && activeConnection.device && activeConnection.device.gatt.connected) activeConnection.device.gatt.disconnect(); if(activeConnection.type === 'usb' && activeConnection.writer) { try { await activeConnection.writer.close(); } catch(e){} } activeConnection = { type: null, device: null, writer: null }; isConnected = false; updateUI(); showMessage("Disconnected"); }
+    disconnectBtn.onclick = disconnect;
+
+    // Bluetooth connection (picker)
+    connectBtBtn.onclick = async () => {
+        if(!navigator.bluetooth) { showMessage("Web Bluetooth not supported", true); return; }
         try {
             const device = await navigator.bluetooth.requestDevice({ filters: [{ services: [SPP_SERVICE_UUID] }], optionalServices: [SPP_SERVICE_UUID] });
-            bluetoothDevice = device;
-            device.addEventListener('gattserverdisconnected', () => { isConnected=false; updateBluetoothUI(); showMessage("Disconnected", true); });
             const server = await device.gatt.connect();
             const service = await server.getPrimaryService(SPP_SERVICE_UUID);
             const characteristic = await service.getCharacteristic(SPP_CHARACTERISTIC_UUID);
-            bluetoothCharacteristic = characteristic;
+            await disconnect();
+            activeConnection = { type: 'bluetooth', device: device, characteristic: characteristic };
             isConnected = true;
-            updateBluetoothUI();
-            showMessage(`✅ Connected to ${device.name || "printer"}`);
-            return true;
-        } catch(err) { showMessage(`Connect fail: ${err.message}`, true); isConnected=false; updateBluetoothUI(); return false; }
-    }
-    async function disconnectPrinter() {
-        if (bluetoothDevice && bluetoothDevice.gatt.connected) bluetoothDevice.gatt.disconnect();
-        isConnected = false;
-        bluetoothCharacteristic = null;
-        updateBluetoothUI();
-        showMessage("Disconnected");
-    }
-    connectBtn.addEventListener('click', connectPrinter);
-    disconnectBtn.addEventListener('click', disconnectPrinter);
+            device.addEventListener('gattserverdisconnected', () => { if(activeConnection.type === 'bluetooth') disconnect(); });
+            updateUI();
+            showMessage(`✅ Bluetooth connected to ${device.name || "printer"}`);
+        } catch(e) { showMessage(`BT error: ${e.message}`, true); }
+    };
 
-    // ---------- PRINT: CENTERED + BOLD + LOGO + HISTORY (with units) ----------
+    // USB connection (WebUSB)
+    connectUsbBtn.onclick = async () => {
+        if(!navigator.usb) { showMessage("WebUSB not supported (Chrome/Edge on HTTPS)", true); return; }
+        try {
+            const device = await navigator.usb.requestDevice({ filters: [] });
+            await device.open();
+            await device.selectConfiguration(1);
+            await device.claimInterface(0);
+            const writer = await device.transferOut(1, new Uint8Array([0x1B,0x40])); // test init
+            await disconnect();
+            activeConnection = { type: 'usb', device: device, writer: null };
+            isConnected = true;
+            updateUI();
+            showMessage(`✅ USB connected to ${device.productName || "printer"}`);
+        } catch(e) { showMessage(`USB error: ${e.message}`, true); }
+    };
+
+    // ---------- PRINT (conditional + ESC/POS) ----------
+    async function writeData(data) {
+        if(activeConnection.type === 'bluetooth' && activeConnection.characteristic) {
+            await activeConnection.characteristic.writeValue(data);
+        } else if(activeConnection.type === 'usb' && activeConnection.device) {
+            await activeConnection.device.transferOut(1, data);
+        } else throw new Error("No active connection");
+    }
+
     async function imageToRaster(imgElement, maxWidth=384) {
         return new Promise((resolve, reject) => {
             const canvas = document.createElement('canvas');
@@ -816,7 +425,7 @@
             const img = imgElement;
             const process = () => {
                 let width = img.width, height = img.height;
-                if (width > maxWidth) { let scale = maxWidth/width; width = maxWidth; height = Math.floor(height*scale); }
+                if(width > maxWidth) { let scale = maxWidth/width; width = maxWidth; height = Math.floor(height*scale); }
                 canvas.width = width; canvas.height = height;
                 ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0,0,width,height);
                 ctx.drawImage(img,0,0,width,height);
@@ -824,104 +433,78 @@
                 const data = imgData.data;
                 const widthBytes = Math.ceil(width/8);
                 const bitmap = new Uint8Array(widthBytes*height);
-                for(let y=0;y<height;y++){
-                    for(let x=0;x<width;x++){
-                        const idx = y*width+x;
-                        const gray = (data[idx*4]+data[idx*4+1]+data[idx*4+2])/3;
-                        if(gray<128){
-                            const byteIdx = y*widthBytes + Math.floor(x/8);
-                            const bit = 7-(x%8);
-                            bitmap[byteIdx] |= (1<<bit);
-                        }
-                    }
-                }
+                for(let y=0;y<height;y++) for(let x=0;x<width;x++) { let idx = y*width+x; let gray = (data[idx*4]+data[idx*4+1]+data[idx*4+2])/3; if(gray<128) { let byteIdx = y*widthBytes + Math.floor(x/8); let bit = 7-(x%8); bitmap[byteIdx] |= (1<<bit); } }
                 const xL = widthBytes&0xFF, xH = (widthBytes>>8)&0xFF, yL = height&0xFF, yH = (height>>8)&0xFF;
                 const header = new Uint8Array([0x1D,0x76,0x30,0x00,xL,xH,yL,yH]);
                 const full = new Uint8Array(header.length+bitmap.length);
                 full.set(header); full.set(bitmap, header.length);
                 resolve(full);
             };
-            if(!img.complete){ img.onload=process; img.onerror=reject; return; }
+            if(!img.complete) { img.onload = process; img.onerror = reject; return; }
             process();
         });
     }
 
-    function buildCenteredBoldBytes(clinic, rbsFull, hba1cFull, datetimeStr) {
+    function buildConditionalBytes(clinic, rbs, hba1c, bp, datetimeStr) {
         let bytes = [];
-        bytes.push(0x1B,0x40);          // init
-        bytes.push(0x1B,0x61,0x01);     // center align
+        bytes.push(0x1B,0x40, 0x1B,0x61,0x01);
         const enc = new TextEncoder();
-        function addLine(txt, bold=false){
-            if(bold) bytes.push(0x1B,0x45,0x01);
-            const lineBytes = enc.encode(txt+"\n");
-            bytes.push(...lineBytes);
-            if(bold) bytes.push(0x1B,0x45,0x00);
-        }
+        function addLine(txt, bold=false) { if(bold) bytes.push(0x1B,0x45,0x01); bytes.push(...enc.encode(txt+"\n")); if(bold) bytes.push(0x1B,0x45,0x00); }
         addLine(`Clinic: ${clinic}`, true);
         addLine(datetimeStr, false);
         addLine("--------------------------------", false);
-        addLine("Random Blood Glucose Test (RBS)", false);
-        addLine(`Test Value: ${rbsFull}`, true);
-        addLine("--------------------------------", false);
-        addLine("HbA1c Test", false);
-        addLine(`HbA1c {%} : ${hba1cFull}`, true);
+        if(rbs) { addLine("Random Blood Glucose Test (RBS)", false); addLine(`Test Value: ${rbs}`, true); addLine("--------------------------------", false); }
+        if(hba1c) { addLine("HbA1c Test", false); addLine(`HbA1c {%} : ${hba1c}`, true); addLine("--------------------------------", false); }
+        if(bp) { addLine("Blood Pressure", false); addLine(`${bp}`, true); addLine("--------------------------------", false); }
         addLine("********************************", false);
         addLine("Thank you for your visit!", false);
         addLine("Please follow up with your doctor.", false);
         addLine("********************************", false);
         addLine("", false);
-        bytes.push(0x1B,0x64,0x04);    // feed 4
-        bytes.push(0x1D,0x56,0x41);    // full cut
+        bytes.push(0x1B,0x64,0x04, 0x1D,0x56,0x41);
         return new Uint8Array(bytes);
     }
 
-    async function printReceipt() {
-        if (!isConnected || !bluetoothCharacteristic) {
-            showMessage("🔌 Please connect to printer first", true);
-            const ok = await connectPrinter();
-            if(!ok) return;
-        }
+    printBtn.onclick = async () => {
+        if(!isConnected) { showMessage("Please connect a printer first (Bluetooth or USB)", true); return; }
         const clinic = clinicInput.value.trim();
-        const rbsFull = getRBSValue();
-        const hba1cFull = getHbA1cValue();
-        if(!clinic || !rbsFull || !hba1cFull) {
-            showMessage("Please fill Clinic, RBS value and HbA1c value", true);
-            return;
-        }
+        const rbsVal = getRBSValue();
+        const hba1cVal = getHbA1cValue();
+        const bpVal = getBPValue();
+        if(!clinic) { showMessage("Clinic name is required", true); return; }
+        if(!rbsVal && !hba1cVal && !bpVal) { showMessage("At least one test (RBS, HbA1c, or BP) must be filled", true); return; }
         const now = new Date();
         const dateTimeStr = `${now.toLocaleDateString('en-CA')}  ${now.toLocaleTimeString('en-US', { hour12: false })}`;
-        showMessage("🖨️ Printing centered bold receipt...");
+        showMessage("Printing...");
         printBtn.disabled = true;
         try {
             let cmdList = [];
             cmdList.push(new Uint8Array([0x1B,0x40]));
-            if(storedLogoDataURL && storedLogoDataURL !== 'null'){
+            if(storedLogoDataURL && storedLogoDataURL !== 'null') {
                 const img = new Image();
                 img.src = storedLogoDataURL;
-                await new Promise((res,rej)=>{ img.onload=res; img.onerror=rej; });
+                await new Promise((res,rej) => { img.onload = res; img.onerror = rej; });
                 const raster = await imageToRaster(img, 384);
                 cmdList.push(raster);
                 cmdList.push(new Uint8Array([0x0A,0x0A]));
             }
-            cmdList.push(new Uint8Array([0x1B,0x61,0x01])); // ensure center
-            const textPart = buildCenteredBoldBytes(clinic, rbsFull, hba1cFull, dateTimeStr);
+            cmdList.push(new Uint8Array([0x1B,0x61,0x01]));
+            const textPart = buildConditionalBytes(clinic, rbsVal, hba1cVal, bpVal, dateTimeStr);
             const finalText = textPart.slice(2); // remove duplicate init
             cmdList.push(finalText);
             const totalLen = cmdList.reduce((s,a)=>s+a.length,0);
             const finalCmd = new Uint8Array(totalLen);
             let off=0;
-            for(let part of cmdList){ finalCmd.set(part, off); off+=part.length; }
-            await bluetoothCharacteristic.writeValue(finalCmd);
-            addHistoryRecord(clinic, rbsFull, hba1cFull);
+            for(let part of cmdList) { finalCmd.set(part, off); off+=part.length; }
+            await writeData(finalCmd);
+            addHistoryRecord(clinic, rbsVal || null, hba1cVal || null, bpVal || null);
             showMessage("✅ Receipt printed & saved to history");
-        } catch(e) { showMessage(`Print error: ${e.message}`, true); if(e.message.includes("GATT")){ isConnected=false; updateBluetoothUI(); } }
+        } catch(e) { showMessage(`Print error: ${e.message}`, true); if(e.message.includes("GATT")||e.message.includes("disconnected")) disconnect(); }
         finally { printBtn.disabled = false; }
-    }
-    printBtn.addEventListener('click', printReceipt);
+    };
 
-    // initial load
     loadLogoFromStorage();
-    updateBluetoothUI();
+    updateUI();
     updateFullPreview();
     renderHistoryList();
 </script>
