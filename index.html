@@ -74,7 +74,9 @@
         .bp-double .bp-field { flex: 1; display: flex; align-items: center; }
         .bp-double .bp-field input { width: 100%; padding: 0.9rem 0.3rem; text-align: center; }
         .bp-sep { font-weight: 700; color: #2c6e49; }
-        input, .date-chip {
+        
+        /* Updated to include textarea styling naturally */
+        input, textarea, .date-chip {
             width: 100%;
             padding: 0.9rem 1rem;
             border: 1.5px solid rgba(0,0,0,0.08);
@@ -82,8 +84,11 @@
             font-size: 0.95rem;
             background: white;
             transition: 0.2s;
+            font-family: inherit;
         }
-        input:focus { outline: none; border-color: #2c7a4d; box-shadow: 0 0 0 3px rgba(44,122,77,0.2); }
+        input:focus, textarea:focus { outline: none; border-color: #2c7a4d; box-shadow: 0 0 0 3px rgba(44,122,77,0.2); }
+        textarea { resize: none; }
+        
         .date-chip { background: #f0f7fc; display: flex; align-items: center; gap: 10px; font-weight: 500; }
         .separator-light { margin: 1.2rem 0; border-top: 2px dashed rgba(76,159,112,0.3); }
         .logo-zone { background: rgba(248,250,253,0.7); border-radius: 1.5rem; padding: 1rem; margin-bottom: 1.6rem; border: 1px solid rgba(76,159,112,0.2); }
@@ -192,19 +197,34 @@
                 <button id="historyMenuBtn" class="menu-btn"><i class="fas fa-bars"></i> History</button>
             </div>
             <div class="card-body">
-                <!-- Logo -->
-                <div class="logo-zone">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                        <span style="font-weight: 700;"><i class="fas fa-image"></i> Practice Logo</span>
-                        <span style="font-size: 0.7rem; background: #e9eff5; padding: 3px 10px; border-radius: 20px;">PNG/JPG</span>
-                    </div>
-                    <div class="logo-preview-wrap">
-                        <div class="logo-frame"><img id="logoPreviewImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='50' viewBox='0 0 80 50'%3E%3Crect width='80' height='50' fill='%23f1f5f9'/%3E%3Ctext x='18' y='28' font-size='9' fill='%236b7280'%3ELogo%3C/text%3E%3C/svg%3E" alt="Logo"></div>
-                        <div class="button-group">
-                            <button id="uploadLogoBtn" class="btn btn-primary"><i class="fas fa-upload"></i> Upload</button>
-                            <button id="clearLogoBtn" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Remove</button>
+                
+                <!-- Added Grid for Logo & Header Section side by side -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.6rem;">
+                    
+                    <!-- Logo -->
+                    <div class="logo-zone" style="margin-bottom: 0;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span style="font-weight: 700;"><i class="fas fa-image"></i> Practice Logo</span>
+                            <span style="font-size: 0.7rem; background: #e9eff5; padding: 3px 10px; border-radius: 20px;">PNG/JPG</span>
+                        </div>
+                        <div class="logo-preview-wrap">
+                            <div class="logo-frame"><img id="logoPreviewImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='50' viewBox='0 0 80 50'%3E%3Crect width='80' height='50' fill='%23f1f5f9'/%3E%3Ctext x='18' y='28' font-size='9' fill='%236b7280'%3ELogo%3C/text%3E%3C/svg%3E" alt="Logo"></div>
+                            <div class="button-group">
+                                <button id="uploadLogoBtn" class="btn btn-primary"><i class="fas fa-upload"></i> Upload</button>
+                                <button id="clearLogoBtn" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Remove</button>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Receipt Header -->
+                    <div class="logo-zone" style="margin-bottom: 0;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span style="font-weight: 700;"><i class="fas fa-heading"></i> Receipt Header</span>
+                            <span style="font-size: 0.7rem; background: #e9eff5; padding: 3px 10px; border-radius: 20px;">Text</span>
+                        </div>
+                        <textarea id="headerTextInput" placeholder="e.g., 123 Health Ave.&#10;Tel: 555-0198" style="height: 70px;"></textarea>
+                    </div>
+
                 </div>
 
                 <!-- Clinic -->
@@ -320,6 +340,7 @@
     let storedLogoDataURL = null;
 
     const logoPreview = document.getElementById('logoPreviewImg');
+    const headerTextInput = document.getElementById('headerTextInput');
     const clinicInput = document.getElementById('clinicName');
     const rbsInput = document.getElementById('rbsValueInput');
     const hba1cInput = document.getElementById('hba1cValue');
@@ -372,6 +393,7 @@
     historyModal.onclick = (e) => { if(e.target === historyModal) historyModal.classList.remove('active'); };
 
     function updateFullPreview() {
+        const headerTxt = headerTextInput.value.trim();
         const clinic = clinicInput.value.trim() || "_____";
         const rbs = getRBSValue();
         const hba1c = getHbA1cValue();
@@ -382,13 +404,26 @@
         let logoHtml = (storedLogoDataURL && storedLogoDataURL !== 'null') 
             ? `<div style="display:flex; justify-content:center; margin-bottom:10px;"><img src="${storedLogoDataURL}" style="max-width:130px; max-height:70px;"></div>` 
             : '';
-        let lines = [`<strong>Clinic: ${escapeHtml(clinic)}</strong>`, `${dateTime}`, `--------------------------------`];
+        
+        let lines = [];
+        
+        if(headerTxt) {
+            headerTxt.split('\n').forEach(l => {
+                if(l.trim() !== '') lines.push(`<strong style="font-size: 1.25em;">${escapeHtml(l)}</strong>`);
+            });
+            lines.push(`--------------------------------`);
+        }
+
+        lines.push(`<strong>Clinic: ${escapeHtml(clinic)}</strong>`, `${dateTime}`, `--------------------------------`);
+        
         if(rbs) { lines.push(`Random Blood Glucose Test (RBS)`, `<strong>Test Value: ${escapeHtml(rbs)}</strong>`, `--------------------------------`); }
         if(hba1c) { lines.push(`HbA1c Test`, `<strong>HbA1c {%} : ${escapeHtml(hba1c)}</strong>`, `--------------------------------`); }
         if(bp) { lines.push(`Blood Pressure`, `<strong>${escapeHtml(bp)}</strong>`, `--------------------------------`); }
         lines.push(`********************************`, `Thank you for your visit!`, `Please follow up with your doctor.`, `********************************`);
         liveMockDiv.innerHTML = logoHtml + `<div class="mock-text">${lines.map(l => `<div>${l}</div>`).join('')}</div>`;
     }
+    
+    headerTextInput.addEventListener('input', updateFullPreview);
     clinicInput.addEventListener('input', updateFullPreview);
     rbsInput.addEventListener('input', updateFullPreview);
     hba1cInput.addEventListener('input', updateFullPreview);
@@ -680,17 +715,30 @@
         });
     }
 
-    function buildConditionalBytes(clinic, rbs, hba1c, bp, datetimeStr) {
+    function buildConditionalBytes(clinic, rbs, hba1c, bp, datetimeStr, headerTxt) {
         let bytes = [];
         bytes.push(0x00, 0x00, 0x00);
         bytes.push(0x1B, 0x40, 0x1B, 0x61, 0x01); 
         const enc = new TextEncoder(); 
-        function addLine(txt, bold=false) { 
+        
+        // Updated addLine to support printing in a larger size via ESC/POS command
+        function addLine(txt, bold=false, large=false) { 
+            if(large) bytes.push(0x1D, 0x21, 0x11); // Double width and double height
             if(bold) bytes.push(0x1B,0x45,0x01); 
+            
             bytes.push(...enc.encode(txt + "\n")); 
+            
             if(bold) bytes.push(0x1B,0x45,0x00); 
+            if(large) bytes.push(0x1D, 0x21, 0x00); // Reset size back to normal
         }
         
+        if(headerTxt) {
+            headerTxt.split('\n').forEach(l => {
+                if(l.trim() !== '') addLine(l, true, true); // Bold and Large
+            });
+            addLine("--------------------------------", false);
+        }
+
         addLine(`Clinic: ${clinic}`, true);
         addLine(datetimeStr, false);
         addLine("--------------------------------", false);
@@ -712,9 +760,11 @@
     printBtn.onclick = async () => {
         if(!isConnected) { showMessage("Please connect a printer first", true); return; }
         const clinic = clinicInput.value.trim();
+        const headerVal = headerTextInput.value.trim();
         const rbsVal = getRBSValue();
         const hba1cVal = getHbA1cValue();
         const bpVal = getBPValue();
+        
         if(!clinic) { showMessage("Clinic name is required", true); return; }
         if(!rbsVal && !hba1cVal && !bpVal) { showMessage("Fill at least one test", true); return; }
         
@@ -727,7 +777,7 @@
         
         try {
             let cmdList = [];
-            const textPayload = buildConditionalBytes(clinic, rbsVal, hba1cVal, bpVal, dateTimeStr);
+            const textPayload = buildConditionalBytes(clinic, rbsVal, hba1cVal, bpVal, dateTimeStr, headerVal);
             
             if(storedLogoDataURL && storedLogoDataURL !== 'null') {
                 cmdList.push(new Uint8Array([0x00, 0x00, 0x00, 0x1B, 0x40])); 
